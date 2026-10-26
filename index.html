@@ -312,7 +312,51 @@
   .more:hover, .share:hover { border-color: var(--accent); }
   .more:active, .share:active { transform: scale(.97); }
   .share { color: var(--accent-deep); }
-  .toast { margin: 8px 0 0; min-height: 1.4em; text-align: center; color: var(--muted); font-size: 13px; }
+  /* 링크 복사 알림: 잠깐(3초) 떴다가 사라짐 */
+  .copied {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    z-index: 10;
+    width: calc(100% - 32px);
+    max-width: 528px;
+    padding: 16px 18px;
+    border-radius: 16px;
+    background: var(--text);
+    color: var(--bg);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.45;
+    text-align: center;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, .25);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 12px);
+    transition: opacity .2s, transform .2s, visibility .2s;
+  }
+  .copied.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+  /* 복사가 막힌 곳: 주소 칸을 길게 눌러 직접 복사 */
+  .copybox {
+    margin-top: 10px;
+    padding: 12px 14px 14px;
+    border: 1.5px solid var(--accent);
+    border-radius: 14px;
+    background: var(--surface);
+  }
+  .copybox p { margin: 0 0 8px; font-size: 14px; font-weight: 700; }
+  .copybox input {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+    font-size: 15px;
+    -webkit-user-select: all;
+    user-select: all;
+  }
 
   /* 전체 보기 */
   .all {
@@ -619,16 +663,66 @@
       });
       actions.appendChild(more);
     }
-    var share = el('button', { type: 'button', 'class': 'share' }, '이 결과 공유하기');
+    // 공유 창이 없는 곳(인스타·카톡 앱 안 브라우저, PC 등)에선 '링크 복사하기'
+    var share = el('button', { type: 'button', 'class': 'share' },
+      navigator.share ? '이 결과 공유하기' : '링크 복사하기');
     share.addEventListener('click', shareResult);
     actions.appendChild(share);
     results.appendChild(actions);
-    results.appendChild(el('p', { 'class': 'toast', id: 'toast', role: 'status' }));
   }
 
-  function toast(text) {
-    var t = document.getElementById('toast');
-    if (t) t.textContent = text;
+  var copiedTimer;
+  function showCopied() {
+    var t = document.getElementById('copied');
+    if (!t) {
+      t = el('p', { 'class': 'copied', id: 'copied', role: 'status' });
+      document.body.appendChild(t);
+    }
+    t.textContent = '✅ 링크를 복사했어요. 카톡 대화창에 붙여 넣으세요';
+    t.classList.add('show');
+    clearTimeout(copiedTimer);
+    copiedTimer = setTimeout(function () { t.classList.remove('show'); }, 3000);
+  }
+
+  function showCopyBox(url) {
+    var box = results.querySelector('.copybox');
+    if (!box) {
+      box = el('div', { 'class': 'copybox' });
+      box.appendChild(el('p', {}, '아래 주소를 길게 눌러 복사해 주세요'));
+      var input = el('input', { type: 'text', readonly: '', 'aria-label': '이 결과 주소' });
+      input.addEventListener('focus', function () { input.select(); });
+      box.appendChild(input);
+      results.appendChild(box);
+    }
+    var field = box.querySelector('input');
+    field.value = url;
+    field.focus();
+    field.select();
+  }
+
+  // 클립보드 API가 막힌 앱 안 브라우저용 예전 방식
+  function legacyCopy(text) {
+    var ta = el('textarea', { readonly: '', style: 'position:fixed;top:0;left:0;opacity:0' });
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function copyLink(url) {
+    function fallback() {
+      if (legacyCopy(url)) showCopied();
+      else showCopyBox(url);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(showCopied, fallback);
+    } else {
+      fallback();
+    }
   }
 
   function shareResult() {
@@ -639,17 +733,13 @@
     if (state.budget) parts.push(BUDGETS[state.budget].label);
     var text = parts.join(' · ') + ' 선물 추천';
     if (navigator.share) {
-      navigator.share({ title: '선물 고르기', text: text, url: url }).catch(function () {});
+      navigator.share({ title: '선물 고르기', text: text, url: url }).catch(function (e) {
+        // 사용자가 공유 창을 닫은 게 아니라 막힌 거면 링크 복사로
+        if (!e || e.name !== 'AbortError') copyLink(url);
+      });
       return;
     }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(
-        function () { toast('주소를 복사했어요. 붙여 넣어 공유해 주세요.'); },
-        function () { toast(url); }
-      );
-      return;
-    }
-    toast(url);
+    copyLink(url);
   }
 
   // 고른 조건을 주소(?gender=&age=&budget=)에 남겨 공유·새로고침해도 그대로
