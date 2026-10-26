@@ -6,38 +6,62 @@
 <title>선물 고르기</title>
 <meta name="description" content="누구에게, 얼마쯤, 어떤 날인지 고르면 선물 3가지를 골라 드려요.">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fde3d3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#2a1f1a" media="(prefers-color-scheme: dark)">
 <style>
   :root {
-    --bg: #fbf7f2;
+    --bg: #fdf8f3;
+    --dot: #f1e4d6;
     --surface: #ffffff;
-    --text: #2b2420;
-    --muted: #7a6d64;
-    --line: #ece3d9;
-    --accent: #d9734e;
+    --text: #2e231d;
+    --muted: #7c6c61;
+    --line: #f0e3d6;
+    --accent: #e8683f;
+    --accent-deep: #c9502b;
     --accent-ink: #ffffff;
-    --accent-soft: #fbe9df;
-    --note-bg: #f4eee6;
-    --shadow: 0 1px 2px rgba(60, 40, 20, .06), 0 4px 14px rgba(60, 40, 20, .06);
+    --accent-soft: #fde9dd;
+    --hero-1: #fde3d3;
+    --hero-2: #fff1dc;
+    --gold: #f2b84b;
+    --mint: #dff1e6;
+    --mint-ink: #2f6b4a;
+    --sky: #e3eefb;
+    --sky-ink: #2f557f;
+    --note-bg: rgba(255, 255, 255, .55);
+    --shadow: 0 2px 4px rgba(120, 70, 40, .05), 0 10px 28px rgba(120, 70, 40, .09);
+    --shadow-sm: 0 1px 3px rgba(120, 70, 40, .08);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #1c1916;
-      --surface: #262220;
-      --text: #f1e9e1;
-      --muted: #ab9f95;
-      --line: #3a3430;
-      --accent: #e98a64;
-      --accent-ink: #1c1916;
-      --accent-soft: #3d2a21;
-      --note-bg: #2b2623;
-      --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+      --bg: #1b1613;
+      --dot: #2a221d;
+      --surface: #261f1b;
+      --text: #f4ebe3;
+      --muted: #b2a398;
+      --line: #3a2f29;
+      --accent: #f07f57;
+      --accent-deep: #f59a78;
+      --accent-ink: #1b1613;
+      --accent-soft: #3e2a20;
+      --hero-1: #3a2419;
+      --hero-2: #2a1f1a;
+      --gold: #e2a83c;
+      --mint: #22362b;
+      --mint-ink: #9fd8b5;
+      --sky: #1f2c3b;
+      --sky-ink: #a8c8ef;
+      --note-bg: rgba(0, 0, 0, .25);
+      --shadow: 0 2px 10px rgba(0, 0, 0, .35);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, .3);
     }
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
-    background: var(--bg);
+    background-color: var(--bg);
+    background-image: radial-gradient(var(--dot) 1.2px, transparent 1.2px);
+    background-size: 18px 18px;
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
     font-size: 16px;
@@ -46,56 +70,146 @@
   }
   main { max-width: 560px; margin: 0 auto; padding: 0 16px 48px; }
 
-  .disclosure {
+  /* 첫 화면 */
+  .hero {
+    position: relative;
     margin: 0 -16px;
-    padding: 8px 16px;
+    padding: 0 20px 34px;
+    background: linear-gradient(160deg, var(--hero-1) 0%, var(--hero-2) 100%);
+    border-radius: 0 0 28px 28px;
+    overflow: hidden;
+  }
+  .hero::before, .hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .hero::before { width: 180px; height: 180px; right: -60px; top: 40px; background: var(--accent); opacity: .12; }
+  .hero::after { width: 90px; height: 90px; left: -30px; bottom: -30px; background: var(--gold); opacity: .18; }
+  .disclosure {
+    position: relative;
+    margin: 0 -20px 22px;
+    padding: 8px 20px;
     background: var(--note-bg);
     color: var(--muted);
     font-size: 12.5px;
     line-height: 1.5;
-    border-bottom: 1px solid var(--line);
   }
-  header { padding: 24px 0 8px; }
-  h1 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
-  .sub { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
+  .hero-body { position: relative; display: flex; align-items: center; gap: 14px; }
+  .hero-text { flex: 1; min-width: 0; }
+  .eyebrow {
+    display: inline-block;
+    margin-bottom: 8px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--accent-deep);
+    font-size: 12.5px;
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+  }
+  h1 { margin: 0; font-size: 34px; line-height: 1.15; letter-spacing: -0.03em; font-weight: 800; }
+  .sub { margin: 8px 0 0; color: var(--muted); font-size: 15px; }
+  .gift-art { flex: 0 0 auto; width: 92px; height: 92px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .gift-art { animation: bob 3.2s ease-in-out infinite; }
+    @keyframes bob { 50% { transform: translateY(-5px) rotate(-3deg); } }
+  }
 
-  .q { margin: 20px 0 0; padding: 0; border: 0; }
-  .q legend { padding: 0; margin-bottom: 8px; font-weight: 700; font-size: 15px; }
+  /* 질문 */
+  .questions { position: relative; margin-top: -18px; display: grid; gap: 12px; }
+  .q {
+    margin: 0;
+    padding: 16px 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .q legend {
+    float: left;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    margin-bottom: 12px;
+    font-weight: 800;
+    font-size: 16px;
+  }
+  .q legend + * { clear: both; }
+  .step {
+    display: inline-grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    font-size: 13px;
+    font-weight: 800;
+    transition: background .2s, color .2s;
+  }
+  .q.done .step { background: var(--accent); color: var(--accent-ink); }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip {
     appearance: none;
-    border: 1px solid var(--line);
-    background: var(--surface);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
     color: var(--text);
     font: inherit;
     font-size: 15px;
     padding: 8px 14px;
-    min-height: 40px;
+    min-height: 42px;
     border-radius: 999px;
     cursor: pointer;
-    transition: background .15s, border-color .15s, color .15s;
+    transition: background .15s, border-color .15s, color .15s, transform .1s;
   }
+  .chip .ico { font-size: 17px; line-height: 1; }
   .chip:hover { border-color: var(--accent); }
+  .chip:active { transform: scale(.96); }
   .chip[aria-pressed="true"] {
     background: var(--accent);
     border-color: var(--accent);
     color: var(--accent-ink);
-    font-weight: 600;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(232, 104, 63, .3);
   }
   .chip:focus-visible, .btn:focus-visible, summary:focus-visible {
-    outline: 3px solid var(--accent); outline-offset: 2px;
+    outline: 3px solid var(--gold); outline-offset: 2px;
   }
 
-  #results { margin-top: 28px; }
-  .hint { color: var(--muted); font-size: 15px; margin: 0; }
+  /* 결과 */
+  #results { margin-top: 30px; scroll-margin-top: 12px; }
+  .empty {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    padding: 18px;
+    border: 1.5px dashed var(--line);
+    border-radius: 18px;
+    color: var(--muted);
+    font-size: 15px;
+    background: var(--surface);
+  }
+  .empty .ico { font-size: 26px; }
+  .results-head { margin: 0 0 12px; font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+  .results-head small { margin-left: 6px; color: var(--muted); font-size: 14px; font-weight: 500; }
   .relaxed {
-    margin: 0 0 12px;
-    padding: 10px 12px;
+    display: flex;
+    gap: 8px;
+    margin: 0 0 14px;
+    padding: 12px 14px;
     background: var(--accent-soft);
-    border-radius: 10px;
+    border-radius: 14px;
     font-size: 14px;
   }
-  .relaxed strong { font-weight: 700; }
+  .relaxed strong { display: block; font-weight: 800; color: var(--accent-deep); }
 
   .list { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
   .card {
@@ -104,8 +218,14 @@
     padding: 14px;
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 16px;
+    border-radius: 20px;
     box-shadow: var(--shadow);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    #results .card { animation: rise .45s cubic-bezier(.2, .7, .3, 1) both; }
+    #results .card:nth-child(2) { animation-delay: .07s; }
+    #results .card:nth-child(3) { animation-delay: .14s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
   }
   /* 파트너스 배너: 원본 비율(240×480) 그대로, 자르거나 덮지 않음 */
   .banner {
@@ -115,63 +235,120 @@
     box-sizing: content-box;
     width: 110px;
     height: auto;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid var(--line);
     background: #fff;
+    box-shadow: var(--shadow-sm);
   }
   .info { display: flex; flex-direction: column; min-width: 0; flex: 1; }
-  .info h3 { margin: 2px 0 6px; font-size: 17px; line-height: 1.35; }
-  .reason { margin: 0 0 8px; font-size: 14.5px; }
+  .rank {
+    align-self: flex-start;
+    margin-bottom: 6px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    font-size: 12px;
+    font-weight: 800;
+  }
+  .info h3 { margin: 0 0 6px; font-size: 17px; line-height: 1.35; letter-spacing: -0.01em; }
+  .reason { margin: 0 0 10px; font-size: 14.5px; color: var(--text); }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 8px; padding: 0; list-style: none; }
+  .tags li { padding: 1px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+  .tag-who { background: var(--sky); color: var(--sky-ink); }
+  .tag-occ { background: var(--mint); color: var(--mint-ink); }
   .price { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+  .price b { color: var(--text); font-size: 15px; font-weight: 800; }
   .btn {
     margin-top: auto;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     align-self: flex-start;
-    padding: 9px 16px;
-    border-radius: 10px;
+    padding: 10px 16px;
+    border-radius: 12px;
     background: var(--accent);
     color: var(--accent-ink);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 15px;
-  }
-  .btn:hover { filter: brightness(1.05); }
-
-  .all { margin-top: 36px; border-top: 1px solid var(--line); padding-top: 16px; }
-  .all summary {
-    cursor: pointer;
     font-weight: 700;
-    padding: 8px 0;
-    list-style-position: inside;
+    font-size: 15px;
+    box-shadow: 0 4px 12px rgba(232, 104, 63, .25);
+    transition: background .15s, transform .1s;
   }
-  .all .list { margin-top: 12px; }
+  .btn:hover { background: var(--accent-deep); }
+  .btn:active { transform: scale(.97); }
 
-  footer { margin-top: 32px; color: var(--muted); font-size: 12.5px; }
+  /* 전체 보기 */
+  .all {
+    margin-top: 32px;
+    border-radius: 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .all summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    cursor: pointer;
+    font-weight: 800;
+    list-style: none;
+  }
+  .all summary::-webkit-details-marker { display: none; }
+  .all summary::after {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-right: 2.5px solid var(--muted);
+    border-bottom: 2.5px solid var(--muted);
+    transform: rotate(45deg) translateY(-3px);
+    transition: transform .2s;
+  }
+  .all[open] summary::after { transform: rotate(-135deg) translateY(-3px); }
+  .all summary small { margin-left: 6px; color: var(--muted); font-weight: 500; }
+  .all .list { padding: 0 12px 12px; }
+  .all .card { box-shadow: none; background: var(--bg); }
+
+  footer { margin-top: 32px; text-align: center; color: var(--muted); font-size: 12.5px; }
   footer p { margin: 4px 0; }
 </style>
 </head>
 <body>
 <main>
-  <p class="disclosure">이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
-
-  <header>
-    <h1>선물 고르기</h1>
-    <p class="sub">누구에게, 얼마쯤, 어떤 날인지 고르면 선물을 골라 드려요.</p>
+  <header class="hero">
+    <p class="disclosure">이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+    <div class="hero-body">
+      <div class="hero-text">
+        <span class="eyebrow">질문 3개면 끝</span>
+        <h1>선물 고르기</h1>
+        <p class="sub">누구에게, 얼마쯤, 어떤 날인지 고르면 어울리는 선물을 골라 드려요.</p>
+      </div>
+      <svg class="gift-art" viewBox="0 0 96 96" aria-hidden="true">
+        <rect x="14" y="40" width="68" height="46" rx="8" fill="#e8683f"/>
+        <rect x="8" y="28" width="80" height="18" rx="6" fill="#f07f57"/>
+        <rect x="42" y="28" width="12" height="58" fill="#f2b84b"/>
+        <rect x="14" y="46" width="68" height="5" fill="#000" opacity=".08"/>
+        <path d="M48 28c-6-14-24-18-26-8s14 10 26 8z" fill="none" stroke="#f2b84b" stroke-width="6" stroke-linejoin="round"/>
+        <path d="M48 28c6-14 24-18 26-8s-14 10-26 8z" fill="none" stroke="#f2b84b" stroke-width="6" stroke-linejoin="round"/>
+        <circle cx="48" cy="28" r="5" fill="#f2b84b"/>
+      </svg>
+    </div>
   </header>
 
-  <form id="questions" onsubmit="return false">
+  <form class="questions" id="questions" onsubmit="return false">
     <fieldset class="q">
-      <legend>누구에게 주나요?</legend>
+      <legend><span class="step">1</span>누구에게 주나요?</legend>
       <div class="chips" data-key="who">
-        <button type="button" class="chip" data-value="parents" aria-pressed="false">부모님</button>
-        <button type="button" class="chip" data-value="coworker" aria-pressed="false">직장 동료</button>
-        <button type="button" class="chip" data-value="kids" aria-pressed="false">아이</button>
-        <button type="button" class="chip" data-value="lover" aria-pressed="false">연인</button>
-        <button type="button" class="chip" data-value="housewarming" aria-pressed="false">집들이</button>
+        <button type="button" class="chip" data-value="parents" aria-pressed="false"><span class="ico" aria-hidden="true">👵</span>부모님</button>
+        <button type="button" class="chip" data-value="coworker" aria-pressed="false"><span class="ico" aria-hidden="true">💼</span>직장 동료</button>
+        <button type="button" class="chip" data-value="kids" aria-pressed="false"><span class="ico" aria-hidden="true">🧸</span>아이</button>
+        <button type="button" class="chip" data-value="lover" aria-pressed="false"><span class="ico" aria-hidden="true">💕</span>연인</button>
+        <button type="button" class="chip" data-value="housewarming" aria-pressed="false"><span class="ico" aria-hidden="true">🏠</span>집들이</button>
       </div>
     </fieldset>
     <fieldset class="q">
-      <legend>예산은 얼마쯤?</legend>
+      <legend><span class="step">2</span>예산은 얼마쯤?</legend>
       <div class="chips" data-key="budget">
         <button type="button" class="chip" data-value="b1" aria-pressed="false">2만 원 이하</button>
         <button type="button" class="chip" data-value="b2" aria-pressed="false">2~5만 원</button>
@@ -180,22 +357,20 @@
       </div>
     </fieldset>
     <fieldset class="q">
-      <legend>어떤 날인가요?</legend>
+      <legend><span class="step">3</span>어떤 날인가요?</legend>
       <div class="chips" data-key="occasion">
-        <button type="button" class="chip" data-value="holiday" aria-pressed="false">명절</button>
-        <button type="button" class="chip" data-value="birthday" aria-pressed="false">생일</button>
-        <button type="button" class="chip" data-value="thanks" aria-pressed="false">감사</button>
-        <button type="button" class="chip" data-value="housewarming" aria-pressed="false">집들이</button>
+        <button type="button" class="chip" data-value="holiday" aria-pressed="false"><span class="ico" aria-hidden="true">🌕</span>명절</button>
+        <button type="button" class="chip" data-value="birthday" aria-pressed="false"><span class="ico" aria-hidden="true">🎂</span>생일</button>
+        <button type="button" class="chip" data-value="thanks" aria-pressed="false"><span class="ico" aria-hidden="true">💐</span>감사</button>
+        <button type="button" class="chip" data-value="housewarming" aria-pressed="false"><span class="ico" aria-hidden="true">🏡</span>집들이</button>
       </div>
     </fieldset>
   </form>
 
-  <section id="results" aria-live="polite">
-    <p class="hint">위에서 하나라도 고르면 바로 여기에 선물이 나와요.</p>
-  </section>
+  <section id="results" aria-live="polite"></section>
 
   <details class="all" id="all">
-    <summary>전체 선물 보기</summary>
+    <summary><span>전체 선물 보기<small id="all-count"></small></span></summary>
     <ul class="list" id="all-list"></ul>
   </details>
 
@@ -216,6 +391,8 @@
     b4: { label: '10만 원 이상', test: function (p) { return p > 100000; } }
   };
   var NAMES = { who: '누구에게', budget: '예산', occasion: '상황' };
+  var WHO = { parents: '부모님', coworker: '직장 동료', kids: '아이', lover: '연인', housewarming: '집들이' };
+  var OCCASION = { holiday: '명절', birthday: '생일', thanks: '감사', housewarming: '집들이' };
   // 맞는 게 없을 때 먼저 푸는 조건 순서
   var RELAX_ORDER = ['occasion', 'budget', 'who'];
   var MAX = 3;
@@ -241,7 +418,7 @@
     return m ? Number(m[2]) + '월 ' + Number(m[3]) + '일 기준' : '수집일 기준';
   }
 
-  function card(p) {
+  function card(p, rank) {
     var li = el('li', { 'class': 'card' });
     var img = el('img', {
       'class': 'banner', src: p.image, alt: p.short + ' 상품 이미지',
@@ -250,12 +427,23 @@
     li.appendChild(img);
 
     var info = el('div', { 'class': 'info' });
+    if (rank) info.appendChild(el('span', { 'class': 'rank' }, '추천 ' + rank));
     info.appendChild(el('h3', {}, p.short));
     info.appendChild(el('p', { 'class': 'reason' }, p.reason));
-    info.appendChild(el('p', { 'class': 'price' }, priceText(p.price) + ' · ' + dateText(p.collected) + ', 구매 전 확인'));
+
+    var tags = el('ul', { 'class': 'tags', 'aria-label': '어울리는 대상과 상황' });
+    (p.who || []).forEach(function (w) { if (WHO[w]) tags.appendChild(el('li', { 'class': 'tag-who' }, WHO[w])); });
+    (p.occasion || []).forEach(function (o) { if (OCCASION[o]) tags.appendChild(el('li', { 'class': 'tag-occ' }, OCCASION[o])); });
+    info.appendChild(tags);
+
+    var price = el('p', { 'class': 'price' });
+    price.appendChild(el('b', {}, priceText(p.price)));
+    price.appendChild(document.createTextNode(' · ' + dateText(p.collected) + ', 구매 전 확인'));
+    info.appendChild(price);
+
     info.appendChild(el('a', {
       'class': 'btn', href: p.link, target: '_blank', rel: 'sponsored noopener'
-    }, '쿠팡에서 보기'));
+    }, '쿠팡에서 보기 →'));
     li.appendChild(info);
     return li;
   }
@@ -281,11 +469,18 @@
     return out;
   }
 
+  function empty(icon, text) {
+    var p = el('p', { 'class': 'empty' });
+    p.appendChild(el('span', { 'class': 'ico', 'aria-hidden': 'true' }, icon));
+    p.appendChild(document.createTextNode(text));
+    return p;
+  }
+
   function render() {
     var keys = Object.keys(state).filter(function (k) { return state[k]; });
     results.innerHTML = '';
     if (!keys.length) {
-      results.appendChild(el('p', { 'class': 'hint' }, '위에서 하나라도 고르면 바로 여기에 선물이 나와요.'));
+      results.appendChild(empty('🎁', '위에서 하나라도 고르면 바로 여기에 선물이 나와요.'));
       return;
     }
 
@@ -300,22 +495,30 @@
       }
     }
 
-    if (dropped.length) {
-      var note = el('p', { 'class': 'relaxed' });
-      note.appendChild(el('strong', {}, '조건을 넓혀 찾았어요. '));
-      note.appendChild(document.createTextNode(
-        "딱 맞는 선물이 없어서 '" + dropped.map(function (k) { return NAMES[k]; }).join("', '") + "' 조건은 빼고 골랐어요."
-      ));
-      results.appendChild(note);
-    }
-
     if (!found.length) {
-      results.appendChild(el('p', { 'class': 'hint' }, '아직 맞는 선물이 없어요. 아래 전체 선물을 둘러봐 주세요.'));
+      results.appendChild(empty('🔎', '아직 맞는 선물이 없어요. 아래 전체 선물을 둘러봐 주세요.'));
       return;
     }
 
+    var shown = found.slice(0, MAX);
+    var head = el('h2', { 'class': 'results-head' }, '이런 선물 어때요?');
+    head.appendChild(el('small', {}, shown.length + '가지'));
+    results.appendChild(head);
+
+    if (dropped.length) {
+      var note = el('div', { 'class': 'relaxed' });
+      note.appendChild(el('span', { 'aria-hidden': 'true' }, '💡'));
+      var txt = el('p', { style: 'margin:0' });
+      txt.appendChild(el('strong', {}, '조건을 넓혀 찾았어요'));
+      txt.appendChild(document.createTextNode(
+        "딱 맞는 선물이 없어서 '" + dropped.map(function (k) { return NAMES[k]; }).join("', '") + "' 조건은 빼고 골랐어요."
+      ));
+      note.appendChild(txt);
+      results.appendChild(note);
+    }
+
     var ul = el('ul', { 'class': 'list' });
-    found.slice(0, MAX).forEach(function (p) { ul.appendChild(card(p)); });
+    shown.forEach(function (p, i) { ul.appendChild(card(p, i + 1)); });
     results.appendChild(ul);
   }
 
@@ -329,9 +532,12 @@
       group.querySelectorAll('.chip').forEach(function (c) {
         c.setAttribute('aria-pressed', String(c.getAttribute('data-value') === state[key]));
       });
+      group.closest('.q').classList.toggle('done', !!state[key]);
       render();
     });
   });
+
+  render();
 
   fetch('products.json', { cache: 'no-cache' })
     .then(function (r) {
@@ -342,11 +548,12 @@
       products = Array.isArray(data) ? data : [];
       var all = document.getElementById('all-list');
       products.forEach(function (p) { all.appendChild(card(p)); });
+      document.getElementById('all-count').textContent = products.length + '개';
       render();
     })
     .catch(function () {
       results.innerHTML = '';
-      results.appendChild(el('p', { 'class': 'hint' }, '선물 목록을 불러오지 못했어요. 잠시 후 새로고침해 주세요.'));
+      results.appendChild(empty('😥', '선물 목록을 불러오지 못했어요. 잠시 후 새로고침해 주세요.'));
     });
 })();
 </script>
