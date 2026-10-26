@@ -256,6 +256,7 @@
   .tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 8px; padding: 0; list-style: none; }
   .tags li { padding: 1px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
   .tag-who { background: var(--sky); color: var(--sky-ink); }
+  .tag-age { background: var(--accent-soft); color: var(--accent-deep); }
   .tag-occ { background: var(--mint); color: var(--mint-ink); }
   .price { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
   .price b { color: var(--text); font-size: 15px; font-weight: 800; }
@@ -320,9 +321,9 @@
     <p class="disclosure">이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
     <div class="hero-body">
       <div class="hero-text">
-        <span class="eyebrow">질문 3개면 끝</span>
+        <span class="eyebrow">질문 4개면 끝</span>
         <h1>선물 고르기</h1>
-        <p class="sub">누구에게, 얼마쯤, 어떤 날인지 고르면 어울리는 선물을 골라 드려요.</p>
+        <p class="sub">누구에게, 몇 살쯤, 얼마쯤, 어떤 날인지 고르면 어울리는 선물을 골라 드려요.</p>
       </div>
       <svg class="gift-art" viewBox="0 0 96 96" aria-hidden="true">
         <rect x="14" y="40" width="68" height="46" rx="8" fill="#e8683f"/>
@@ -348,7 +349,16 @@
       </div>
     </fieldset>
     <fieldset class="q">
-      <legend><span class="step">2</span>예산은 얼마쯤?</legend>
+      <legend><span class="step">2</span>몇 살쯤인가요?</legend>
+      <div class="chips" data-key="age">
+        <button type="button" class="chip" data-value="20s" aria-pressed="false">20대</button>
+        <button type="button" class="chip" data-value="30s" aria-pressed="false">30대</button>
+        <button type="button" class="chip" data-value="40s" aria-pressed="false">40대</button>
+        <button type="button" class="chip" data-value="50plus" aria-pressed="false">50대 이상</button>
+      </div>
+    </fieldset>
+    <fieldset class="q">
+      <legend><span class="step">3</span>예산은 얼마쯤?</legend>
       <div class="chips" data-key="budget">
         <button type="button" class="chip" data-value="b1" aria-pressed="false">2만 원 이하</button>
         <button type="button" class="chip" data-value="b2" aria-pressed="false">2~5만 원</button>
@@ -357,7 +367,7 @@
       </div>
     </fieldset>
     <fieldset class="q">
-      <legend><span class="step">3</span>어떤 날인가요?</legend>
+      <legend><span class="step">4</span>어떤 날인가요?</legend>
       <div class="chips" data-key="occasion">
         <button type="button" class="chip" data-value="holiday" aria-pressed="false"><span class="ico" aria-hidden="true">🌕</span>명절</button>
         <button type="button" class="chip" data-value="birthday" aria-pressed="false"><span class="ico" aria-hidden="true">🎂</span>생일</button>
@@ -390,15 +400,16 @@
     b3: { label: '5~10만 원', test: function (p) { return p > 50000 && p <= 100000; } },
     b4: { label: '10만 원 이상', test: function (p) { return p > 100000; } }
   };
-  var NAMES = { who: '누구에게', budget: '예산', occasion: '상황' };
+  var NAMES = { who: '누구에게', age: '연령대', budget: '예산', occasion: '상황' };
   var WHO = { parents: '부모님', coworker: '직장 동료', kids: '아이', lover: '연인', housewarming: '집들이' };
+  var AGE = { '20s': '20대', '30s': '30대', '40s': '40대', '50plus': '50대 이상' };
   var OCCASION = { holiday: '명절', birthday: '생일', thanks: '감사', housewarming: '집들이' };
   // 맞는 게 없을 때 먼저 푸는 조건 순서
-  var RELAX_ORDER = ['occasion', 'budget', 'who'];
+  var RELAX_ORDER = ['occasion', 'age', 'budget', 'who'];
   var MAX = 3;
 
   var products = [];
-  var state = { who: null, budget: null, occasion: null };
+  var state = { who: null, age: null, budget: null, occasion: null };
   var results = document.getElementById('results');
 
   function el(tag, attrs, text) {
@@ -433,6 +444,7 @@
 
     var tags = el('ul', { 'class': 'tags', 'aria-label': '어울리는 대상과 상황' });
     (p.who || []).forEach(function (w) { if (WHO[w]) tags.appendChild(el('li', { 'class': 'tag-who' }, WHO[w])); });
+    (p.age || []).forEach(function (a) { if (AGE[a]) tags.appendChild(el('li', { 'class': 'tag-age' }, AGE[a])); });
     (p.occasion || []).forEach(function (o) { if (OCCASION[o]) tags.appendChild(el('li', { 'class': 'tag-occ' }, OCCASION[o])); });
     info.appendChild(tags);
 
@@ -452,6 +464,8 @@
     return keys.every(function (k) {
       var v = state[k];
       if (k === 'budget') return BUDGETS[v].test(p.price);
+      // 연령대(age)를 아직 안 적은 상품은 모든 연령에 맞는 걸로 본다
+      if (k === 'age' && !(p.age && p.age.length)) return true;
       return (p[k] || []).indexOf(v) !== -1;
     });
   }
