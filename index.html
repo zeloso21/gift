@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>선물 고르기</title>
-<meta name="description" content="성별, 나이, 예산만 고르면 어울리는 선물 3가지를 골라 드려요.">
+<meta name="description" content="누구에게, 얼마쯤인지만 고르면 어울리는 선물 3가지를 골라 드려요.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:url" content="https://zeloso21.github.io/gift/">
 <meta property="og:title" content="선물 고르기">
-<meta property="og:description" content="성별, 나이, 예산만 고르면 어울리는 선물 3가지를 골라 드려요.">
+<meta property="og:description" content="누구에게, 얼마쯤인지만 고르면 어울리는 선물 3가지를 골라 드려요.">
 <meta property="og:image" content="https://zeloso21.github.io/gift/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -393,7 +393,7 @@
     <div class="hero-body">
       <div class="hero-text">
         <h1>선물 고르기</h1>
-        <p class="sub">성별, 나이, 예산만 고르면 어울리는 선물을 골라 드려요.</p>
+        <p class="sub">누구에게, 얼마쯤인지만 고르면 어울리는 선물을 골라 드려요.</p>
       </div>
       <svg class="gift-art" viewBox="0 0 96 96" aria-hidden="true">
         <rect x="14" y="40" width="68" height="46" rx="8" fill="#e8683f"/>
@@ -409,25 +409,17 @@
 
   <form class="questions" id="questions" onsubmit="return false">
     <fieldset class="q">
-      <legend><span class="step">1</span>성별은요?</legend>
-      <div class="chips" data-key="gender">
-        <button type="button" class="chip" data-value="male" aria-pressed="false"><span class="ico" aria-hidden="true">👨</span>남성</button>
-        <button type="button" class="chip" data-value="female" aria-pressed="false"><span class="ico" aria-hidden="true">👩</span>여성</button>
+      <legend><span class="step">1</span>누구에게 주나요?</legend>
+      <div class="chips" data-key="who">
+        <button type="button" class="chip" data-value="parents" aria-pressed="false"><span class="ico" aria-hidden="true">👵</span>부모님</button>
+        <button type="button" class="chip" data-value="lover" aria-pressed="false"><span class="ico" aria-hidden="true">💕</span>연인</button>
+        <button type="button" class="chip" data-value="coworker" aria-pressed="false"><span class="ico" aria-hidden="true">🤝</span>친구·동료</button>
+        <button type="button" class="chip" data-value="kids" aria-pressed="false"><span class="ico" aria-hidden="true">🧸</span>아이</button>
+        <button type="button" class="chip" data-value="housewarming" aria-pressed="false"><span class="ico" aria-hidden="true">🏠</span>집들이</button>
       </div>
     </fieldset>
     <fieldset class="q">
-      <legend><span class="step">2</span>몇 살쯤인가요?</legend>
-      <div class="chips" data-key="age">
-        <button type="button" class="chip" data-value="kids" aria-pressed="false">아이</button>
-        <button type="button" class="chip" data-value="10s" aria-pressed="false">10대</button>
-        <button type="button" class="chip" data-value="20s" aria-pressed="false">20대</button>
-        <button type="button" class="chip" data-value="30s" aria-pressed="false">30대</button>
-        <button type="button" class="chip" data-value="40s" aria-pressed="false">40대</button>
-        <button type="button" class="chip" data-value="50plus" aria-pressed="false">50대 이상</button>
-      </div>
-    </fieldset>
-    <fieldset class="q">
-      <legend><span class="step">3</span>예산은 얼마쯤?</legend>
+      <legend><span class="step">2</span>예산은 얼마쯤?</legend>
       <div class="chips" data-key="budget">
         <button type="button" class="chip" data-value="b1" aria-pressed="false">2만 원 이하</button>
         <button type="button" class="chip" data-value="b2" aria-pressed="false">2~5만 원</button>
@@ -460,17 +452,17 @@
     b3: { label: '5~10만 원', test: function (p) { return p > 50000 && p <= 100000; } },
     b4: { label: '10만 원 이상', test: function (p) { return p > 100000; } }
   };
-  var NAMES = { gender: '성별', age: '연령대', budget: '예산' };
-  var GENDER = { male: '남성', female: '여성' };
-  var AGE = { kids: '아이', '10s': '10대', '20s': '20대', '30s': '30대', '40s': '40대', '50plus': '50대 이상' };
-  // 맞는 게 없을 때 먼저 푸는 조건 순서
-  var RELAX_ORDER = ['gender', 'age', 'budget'];
+  // 2026-10-26 사용자 요청: 성별·연령대 대신 '받는 사람(관계)' 기준으로 (products.json의 who)
+  var NAMES = { who: '받는 사람', budget: '예산' };
+  var WHO = { parents: '부모님', lover: '연인', coworker: '친구·동료', kids: '아이', housewarming: '집들이' };
+  // 맞는 게 없을 때 먼저 푸는 조건 순서 — 받는 사람은 지키고 예산부터 푼다
+  var RELAX_ORDER = ['budget', 'who'];
   var MAX = 3;
-  var VALID = { gender: GENDER, age: AGE, budget: BUDGETS };
+  var VALID = { who: WHO, budget: BUDGETS };
 
   var products = [];
   var loaded = false;
-  var state = { gender: null, age: null, budget: null };
+  var state = { who: null, budget: null };
   var shownMax = MAX;
   var results = document.getElementById('results');
   var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -505,10 +497,8 @@
     info.appendChild(el('h3', {}, p.short));
     info.appendChild(el('p', { 'class': 'reason' }, p.reason));
 
-    var tags = el('ul', { 'class': 'tags', 'aria-label': '어울리는 성별과 연령대' });
-    // 성별은 한쪽에만 맞는 상품일 때만 태그로 보여 준다
-    if (p.gender && p.gender.length === 1 && GENDER[p.gender[0]]) tags.appendChild(el('li', { 'class': 'tag-gender' }, GENDER[p.gender[0]]));
-    (p.age || []).forEach(function (a) { if (AGE[a]) tags.appendChild(el('li', { 'class': 'tag-age' }, AGE[a])); });
+    var tags = el('ul', { 'class': 'tags', 'aria-label': '어울리는 받는 사람' });
+    (p.who || []).forEach(function (w) { if (WHO[w]) tags.appendChild(el('li', { 'class': 'tag-age' }, WHO[w])); });
     info.appendChild(tags);
 
     var price = el('p', { 'class': 'price' });
@@ -528,8 +518,8 @@
     return keys.every(function (k) {
       var v = s[k];
       if (k === 'budget') return BUDGETS[v].test(p.price);
-      // 성별(gender)·연령대(age)를 아직 안 적은 상품은 모두에게 맞는 걸로 본다
-      if ((k === 'gender' || k === 'age') && !(p[k] && p[k].length)) return true;
+      // 받는 사람(who)을 아직 안 적은 상품은 모두에게 맞는 걸로 본다
+      if (k === 'who' && !(p[k] && p[k].length)) return true;
       return (p[k] || []).indexOf(v) !== -1;
     });
   }
@@ -544,13 +534,11 @@
   // 추천 순서: 고른 조건에 좁게 딱 맞을수록 위로, 집들이 전용 상품은 아래로
   function score(p, dropped) {
     var s = 0;
-    if (state.gender && dropped.indexOf('gender') === -1 &&
-        p.gender && p.gender.length === 1 && p.gender[0] === state.gender) s += 3;
-    if (state.age && dropped.indexOf('age') === -1 && p.age && p.age.indexOf(state.age) !== -1) {
-      s += 1 + 2 / p.age.length;
+    if (state.who && dropped.indexOf('who') === -1 && p.who && p.who.indexOf(state.who) !== -1) {
+      s += 1 + 2 / p.who.length;
     }
     var occ = p.occasion || [];
-    if (occ.length === 1 && occ[0] === 'housewarming') s -= 5;
+    if (state.who !== 'housewarming' && occ.length === 1 && occ[0] === 'housewarming') s -= 5;
     // 예산 조건을 뺐을 땐 고른 예산에 가까운 상품부터
     if (state.budget && dropped.indexOf('budget') !== -1) s -= budgetGap(p.price, state.budget) / 5000;
     return s;
@@ -716,8 +704,7 @@
   function shareResult() {
     var url = location.href;
     var parts = [];
-    if (state.age) parts.push(AGE[state.age]);
-    if (state.gender) parts.push(GENDER[state.gender]);
+    if (state.who) parts.push(WHO[state.who]);
     if (state.budget) parts.push(BUDGETS[state.budget].label);
     var text = parts.join(' · ') + ' 선물 추천';
     if (navigator.share) {
@@ -730,7 +717,7 @@
     copyLink(url);
   }
 
-  // 고른 조건을 주소(?gender=&age=&budget=)에 남겨 공유·새로고침해도 그대로
+  // 고른 조건을 주소(?who=&budget=)에 남겨 공유·새로고침해도 그대로
   function saveToUrl() {
     if (!window.history || !history.replaceState) return;
     var q = Object.keys(state).filter(function (k) { return state[k]; })
@@ -739,7 +726,7 @@
   }
 
   function loadFromUrl() {
-    var m, re = /[?&](gender|age|budget)=([^&#]*)/g;
+    var m, re = /[?&](who|budget)=([^&#]*)/g;
     while ((m = re.exec(location.search))) {
       var v = decodeURIComponent(m[2]);
       if (VALID[m[1]].hasOwnProperty(v)) state[m[1]] = v;
@@ -757,11 +744,11 @@
     });
   }
 
-  // 예산 칩마다, 지금 고른 성별·연령대로 맞는 상품이 몇 개인지
+  // 예산 칩마다, 지금 고른 받는 사람에게 맞는 상품이 몇 개인지
   function updateCounts() {
-    var keys = ['gender', 'age'].filter(function (k) { return state[k]; });
+    var keys = ['who'].filter(function (k) { return state[k]; });
     document.querySelectorAll('.chips[data-key="budget"] .chip').forEach(function (c) {
-      var s = { gender: state.gender, age: state.age, budget: c.getAttribute('data-value') };
+      var s = { who: state.who, budget: c.getAttribute('data-value') };
       var n = products.filter(function (p) { return matches(p, keys.concat('budget'), s); }).length;
       var span = c.querySelector('.count');
       if (!span) {
@@ -779,15 +766,15 @@
       var chip = e.target.closest('.chip');
       if (!chip) return;
       var value = chip.getAttribute('data-value');
-      var wasDone = state.gender && state.age && state.budget;
+      var wasDone = state.who && state.budget;
       state[key] = state[key] === value ? null : value;
       shownMax = MAX;
       syncChips();
       saveToUrl();
       if (products.length) updateCounts();
       render();
-      // 세 질문을 다 고른 순간, 결과가 화면 아래에 있으면 내려 준다
-      if (!wasDone && state.gender && state.age && state.budget &&
+      // 두 질문을 다 고른 순간, 결과가 화면 아래에 있으면 내려 준다
+      if (!wasDone && state.who && state.budget &&
           results.getBoundingClientRect().top > window.innerHeight * 0.6) {
         results.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
       }
