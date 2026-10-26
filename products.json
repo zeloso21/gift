@@ -9,6 +9,9 @@
   "who": [
    "parents"
   ],
+  "age": [
+   "50plus"
+  ],
   "occasion": [
    "holiday",
    "thanks"
@@ -27,6 +30,11 @@
    "parents",
    "coworker"
   ],
+  "age": [
+   "30s",
+   "40s",
+   "50plus"
+  ],
   "occasion": [
    "holiday",
    "thanks"
@@ -44,6 +52,9 @@
   "who": [
    "parents"
   ],
+  "age": [
+   "50plus"
+  ],
   "occasion": [
    "holiday"
   ],
@@ -60,6 +71,11 @@
   "who": [
    "coworker",
    "lover"
+  ],
+  "age": [
+   "20s",
+   "30s",
+   "40s"
   ],
   "occasion": [
    "birthday",
@@ -79,6 +95,11 @@
    "coworker",
    "lover"
   ],
+  "age": [
+   "20s",
+   "30s",
+   "40s"
+  ],
   "occasion": [
    "birthday",
    "thanks"
@@ -96,6 +117,11 @@
   "who": [
    "coworker",
    "parents"
+  ],
+  "age": [
+   "30s",
+   "40s",
+   "50plus"
   ],
   "occasion": [
    "thanks",
@@ -116,6 +142,11 @@
    "housewarming",
    "coworker"
   ],
+  "age": [
+   "20s",
+   "30s",
+   "40s"
+  ],
   "occasion": [
    "housewarming",
    "thanks"
@@ -135,6 +166,11 @@
    "kids",
    "parents"
   ],
+  "age": [
+   "20s",
+   "30s",
+   "40s"
+  ],
   "occasion": [
    "birthday"
   ],
@@ -150,6 +186,11 @@
   "image": "https://thumbnail2.coupangcdn.com/thumbnails/remote/212x212ex/image/retail/images/100331567406296-fdc28fdd-a68f-415e-bb71-b5d79cf89c32.jpg",
   "who": [
    "housewarming"
+  ],
+  "age": [
+   "20s",
+   "30s",
+   "40s"
   ],
   "occasion": [
    "housewarming"
