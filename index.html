@@ -96,6 +96,8 @@
     font-size: 12.5px;
     line-height: 1.5;
   }
+  .search { position: relative; margin: 0 0 22px; }
+  .search iframe { display: block; width: 100%; height: 75px; border: 0; }
   .hero-body { position: relative; display: flex; align-items: center; gap: 14px; }
   .hero-text { flex: 1; min-width: 0; }
   .eyebrow {
@@ -153,7 +155,6 @@
   }
   .q.done .step { background: var(--accent); color: var(--accent-ink); }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chips + .chips { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
   .chip {
     appearance: none;
     display: inline-flex;
@@ -256,9 +257,8 @@
   .reason { margin: 0 0 10px; font-size: 14.5px; color: var(--text); }
   .tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 8px; padding: 0; list-style: none; }
   .tags li { padding: 1px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
-  .tag-who { background: var(--sky); color: var(--sky-ink); }
-  .tag-age { background: var(--accent-soft); color: var(--accent-deep); }
-  .tag-occ { background: var(--mint); color: var(--mint-ink); }
+  .tag-gender { background: var(--sky); color: var(--sky-ink); }
+  .tag-age { background: var(--mint); color: var(--mint-ink); }
   .price { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
   .price b { color: var(--text); font-size: 15px; font-weight: 800; }
   .btn {
@@ -320,11 +320,14 @@
 <main>
   <header class="hero">
     <p class="disclosure">이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+    <div class="search">
+      <iframe src="https://coupa.ng/cqq84P" width="100%" height="75" frameborder="0" scrolling="no" referrerpolicy="unsafe-url" title="쿠팡 상품 검색"></iframe>
+    </div>
     <div class="hero-body">
       <div class="hero-text">
-        <span class="eyebrow">질문 4개면 끝</span>
+        <span class="eyebrow">질문 3개면 끝</span>
         <h1>선물 고르기</h1>
-        <p class="sub">누구에게, 어떤 분께, 얼마쯤, 어떤 날인지 고르면 어울리는 선물을 골라 드려요.</p>
+        <p class="sub">성별, 나이, 예산만 고르면 어울리는 선물을 골라 드려요.</p>
       </div>
       <svg class="gift-art" viewBox="0 0 96 96" aria-hidden="true">
         <rect x="14" y="40" width="68" height="46" rx="8" fill="#e8683f"/>
@@ -340,22 +343,17 @@
 
   <form class="questions" id="questions" onsubmit="return false">
     <fieldset class="q">
-      <legend><span class="step">1</span>누구에게 주나요?</legend>
-      <div class="chips" data-key="who">
-        <button type="button" class="chip" data-value="parents" aria-pressed="false"><span class="ico" aria-hidden="true">👵</span>부모님</button>
-        <button type="button" class="chip" data-value="coworker" aria-pressed="false"><span class="ico" aria-hidden="true">💼</span>직장 동료</button>
-        <button type="button" class="chip" data-value="kids" aria-pressed="false"><span class="ico" aria-hidden="true">🧸</span>아이</button>
-        <button type="button" class="chip" data-value="lover" aria-pressed="false"><span class="ico" aria-hidden="true">💕</span>연인</button>
-        <button type="button" class="chip" data-value="housewarming" aria-pressed="false"><span class="ico" aria-hidden="true">🏠</span>집들이</button>
+      <legend><span class="step">1</span>성별은요?</legend>
+      <div class="chips" data-key="gender">
+        <button type="button" class="chip" data-value="male" aria-pressed="false"><span class="ico" aria-hidden="true">👨</span>남성</button>
+        <button type="button" class="chip" data-value="female" aria-pressed="false"><span class="ico" aria-hidden="true">👩</span>여성</button>
       </div>
     </fieldset>
     <fieldset class="q">
-      <legend><span class="step">2</span>어떤 분인가요?</legend>
-      <div class="chips" data-key="gender" role="group" aria-label="성별">
-        <button type="button" class="chip" data-value="male" aria-pressed="false">남성</button>
-        <button type="button" class="chip" data-value="female" aria-pressed="false">여성</button>
-      </div>
-      <div class="chips" data-key="age" role="group" aria-label="연령대">
+      <legend><span class="step">2</span>몇 살쯤인가요?</legend>
+      <div class="chips" data-key="age">
+        <button type="button" class="chip" data-value="kids" aria-pressed="false">아이</button>
+        <button type="button" class="chip" data-value="10s" aria-pressed="false">10대</button>
         <button type="button" class="chip" data-value="20s" aria-pressed="false">20대</button>
         <button type="button" class="chip" data-value="30s" aria-pressed="false">30대</button>
         <button type="button" class="chip" data-value="40s" aria-pressed="false">40대</button>
@@ -369,15 +367,6 @@
         <button type="button" class="chip" data-value="b2" aria-pressed="false">2~5만 원</button>
         <button type="button" class="chip" data-value="b3" aria-pressed="false">5~10만 원</button>
         <button type="button" class="chip" data-value="b4" aria-pressed="false">10만 원 이상</button>
-      </div>
-    </fieldset>
-    <fieldset class="q">
-      <legend><span class="step">4</span>어떤 날인가요?</legend>
-      <div class="chips" data-key="occasion">
-        <button type="button" class="chip" data-value="holiday" aria-pressed="false"><span class="ico" aria-hidden="true">🌕</span>명절</button>
-        <button type="button" class="chip" data-value="birthday" aria-pressed="false"><span class="ico" aria-hidden="true">🎂</span>생일</button>
-        <button type="button" class="chip" data-value="thanks" aria-pressed="false"><span class="ico" aria-hidden="true">💐</span>감사</button>
-        <button type="button" class="chip" data-value="housewarming" aria-pressed="false"><span class="ico" aria-hidden="true">🏡</span>집들이</button>
       </div>
     </fieldset>
   </form>
@@ -405,17 +394,15 @@
     b3: { label: '5~10만 원', test: function (p) { return p > 50000 && p <= 100000; } },
     b4: { label: '10만 원 이상', test: function (p) { return p > 100000; } }
   };
-  var NAMES = { who: '누구에게', gender: '성별', age: '연령대', budget: '예산', occasion: '상황' };
-  var WHO = { parents: '부모님', coworker: '직장 동료', kids: '아이', lover: '연인', housewarming: '집들이' };
+  var NAMES = { gender: '성별', age: '연령대', budget: '예산' };
   var GENDER = { male: '남성', female: '여성' };
-  var AGE = { '20s': '20대', '30s': '30대', '40s': '40대', '50plus': '50대 이상' };
-  var OCCASION = { holiday: '명절', birthday: '생일', thanks: '감사', housewarming: '집들이' };
+  var AGE = { kids: '아이', '10s': '10대', '20s': '20대', '30s': '30대', '40s': '40대', '50plus': '50대 이상' };
   // 맞는 게 없을 때 먼저 푸는 조건 순서
-  var RELAX_ORDER = ['occasion', 'age', 'gender', 'budget', 'who'];
+  var RELAX_ORDER = ['gender', 'age', 'budget'];
   var MAX = 3;
 
   var products = [];
-  var state = { who: null, gender: null, age: null, budget: null, occasion: null };
+  var state = { gender: null, age: null, budget: null };
   var results = document.getElementById('results');
 
   function el(tag, attrs, text) {
@@ -448,12 +435,10 @@
     info.appendChild(el('h3', {}, p.short));
     info.appendChild(el('p', { 'class': 'reason' }, p.reason));
 
-    var tags = el('ul', { 'class': 'tags', 'aria-label': '어울리는 대상과 상황' });
-    (p.who || []).forEach(function (w) { if (WHO[w]) tags.appendChild(el('li', { 'class': 'tag-who' }, WHO[w])); });
+    var tags = el('ul', { 'class': 'tags', 'aria-label': '어울리는 성별과 연령대' });
     // 성별은 한쪽에만 맞는 상품일 때만 태그로 보여 준다
-    if (p.gender && p.gender.length === 1 && GENDER[p.gender[0]]) tags.appendChild(el('li', { 'class': 'tag-age' }, GENDER[p.gender[0]]));
+    if (p.gender && p.gender.length === 1 && GENDER[p.gender[0]]) tags.appendChild(el('li', { 'class': 'tag-gender' }, GENDER[p.gender[0]]));
     (p.age || []).forEach(function (a) { if (AGE[a]) tags.appendChild(el('li', { 'class': 'tag-age' }, AGE[a])); });
-    (p.occasion || []).forEach(function (o) { if (OCCASION[o]) tags.appendChild(el('li', { 'class': 'tag-occ' }, OCCASION[o])); });
     info.appendChild(tags);
 
     var price = el('p', { 'class': 'price' });
