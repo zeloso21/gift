@@ -9,6 +9,10 @@
   "who": [
    "parents"
   ],
+  "gender": [
+   "male",
+   "female"
+  ],
   "age": [
    "50plus"
   ],
@@ -29,6 +33,10 @@
   "who": [
    "parents",
    "coworker"
+  ],
+  "gender": [
+   "male",
+   "female"
   ],
   "age": [
    "30s",
@@ -52,6 +60,10 @@
   "who": [
    "parents"
   ],
+  "gender": [
+   "male",
+   "female"
+  ],
   "age": [
    "50plus"
   ],
@@ -71,6 +83,9 @@
   "who": [
    "coworker",
    "lover"
+  ],
+  "gender": [
+   "female"
   ],
   "age": [
    "20s",
@@ -95,6 +110,10 @@
    "coworker",
    "lover"
   ],
+  "gender": [
+   "male",
+   "female"
+  ],
   "age": [
    "20s",
    "30s",
@@ -117,6 +136,10 @@
   "who": [
    "coworker",
    "parents"
+  ],
+  "gender": [
+   "male",
+   "female"
   ],
   "age": [
    "30s",
@@ -142,6 +165,10 @@
    "housewarming",
    "coworker"
   ],
+  "gender": [
+   "male",
+   "female"
+  ],
   "age": [
    "20s",
    "30s",
@@ -166,6 +193,10 @@
    "kids",
    "parents"
   ],
+  "gender": [
+   "male",
+   "female"
+  ],
   "age": [
    "20s",
    "30s",
@@ -186,6 +217,10 @@
   "image": "https://thumbnail2.coupangcdn.com/thumbnails/remote/212x212ex/image/retail/images/100331567406296-fdc28fdd-a68f-415e-bb71-b5d79cf89c32.jpg",
   "who": [
    "housewarming"
+  ],
+  "gender": [
+   "male",
+   "female"
   ],
   "age": [
    "20s",

@@ -153,6 +153,7 @@
   }
   .q.done .step { background: var(--accent); color: var(--accent-ink); }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips + .chips { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
   .chip {
     appearance: none;
     display: inline-flex;
@@ -323,7 +324,7 @@
       <div class="hero-text">
         <span class="eyebrow">질문 4개면 끝</span>
         <h1>선물 고르기</h1>
-        <p class="sub">누구에게, 몇 살쯤, 얼마쯤, 어떤 날인지 고르면 어울리는 선물을 골라 드려요.</p>
+        <p class="sub">누구에게, 어떤 분께, 얼마쯤, 어떤 날인지 고르면 어울리는 선물을 골라 드려요.</p>
       </div>
       <svg class="gift-art" viewBox="0 0 96 96" aria-hidden="true">
         <rect x="14" y="40" width="68" height="46" rx="8" fill="#e8683f"/>
@@ -349,8 +350,12 @@
       </div>
     </fieldset>
     <fieldset class="q">
-      <legend><span class="step">2</span>몇 살쯤인가요?</legend>
-      <div class="chips" data-key="age">
+      <legend><span class="step">2</span>어떤 분인가요?</legend>
+      <div class="chips" data-key="gender" role="group" aria-label="성별">
+        <button type="button" class="chip" data-value="male" aria-pressed="false">남성</button>
+        <button type="button" class="chip" data-value="female" aria-pressed="false">여성</button>
+      </div>
+      <div class="chips" data-key="age" role="group" aria-label="연령대">
         <button type="button" class="chip" data-value="20s" aria-pressed="false">20대</button>
         <button type="button" class="chip" data-value="30s" aria-pressed="false">30대</button>
         <button type="button" class="chip" data-value="40s" aria-pressed="false">40대</button>
@@ -400,16 +405,17 @@
     b3: { label: '5~10만 원', test: function (p) { return p > 50000 && p <= 100000; } },
     b4: { label: '10만 원 이상', test: function (p) { return p > 100000; } }
   };
-  var NAMES = { who: '누구에게', age: '연령대', budget: '예산', occasion: '상황' };
+  var NAMES = { who: '누구에게', gender: '성별', age: '연령대', budget: '예산', occasion: '상황' };
   var WHO = { parents: '부모님', coworker: '직장 동료', kids: '아이', lover: '연인', housewarming: '집들이' };
+  var GENDER = { male: '남성', female: '여성' };
   var AGE = { '20s': '20대', '30s': '30대', '40s': '40대', '50plus': '50대 이상' };
   var OCCASION = { holiday: '명절', birthday: '생일', thanks: '감사', housewarming: '집들이' };
   // 맞는 게 없을 때 먼저 푸는 조건 순서
-  var RELAX_ORDER = ['occasion', 'age', 'budget', 'who'];
+  var RELAX_ORDER = ['occasion', 'age', 'gender', 'budget', 'who'];
   var MAX = 3;
 
   var products = [];
-  var state = { who: null, age: null, budget: null, occasion: null };
+  var state = { who: null, gender: null, age: null, budget: null, occasion: null };
   var results = document.getElementById('results');
 
   function el(tag, attrs, text) {
@@ -444,6 +450,8 @@
 
     var tags = el('ul', { 'class': 'tags', 'aria-label': '어울리는 대상과 상황' });
     (p.who || []).forEach(function (w) { if (WHO[w]) tags.appendChild(el('li', { 'class': 'tag-who' }, WHO[w])); });
+    // 성별은 한쪽에만 맞는 상품일 때만 태그로 보여 준다
+    if (p.gender && p.gender.length === 1 && GENDER[p.gender[0]]) tags.appendChild(el('li', { 'class': 'tag-age' }, GENDER[p.gender[0]]));
     (p.age || []).forEach(function (a) { if (AGE[a]) tags.appendChild(el('li', { 'class': 'tag-age' }, AGE[a])); });
     (p.occasion || []).forEach(function (o) { if (OCCASION[o]) tags.appendChild(el('li', { 'class': 'tag-occ' }, OCCASION[o])); });
     info.appendChild(tags);
@@ -464,8 +472,8 @@
     return keys.every(function (k) {
       var v = state[k];
       if (k === 'budget') return BUDGETS[v].test(p.price);
-      // 연령대(age)를 아직 안 적은 상품은 모든 연령에 맞는 걸로 본다
-      if (k === 'age' && !(p.age && p.age.length)) return true;
+      // 성별(gender)·연령대(age)를 아직 안 적은 상품은 모두에게 맞는 걸로 본다
+      if ((k === 'gender' || k === 'age') && !(p[k] && p[k].length)) return true;
       return (p[k] || []).indexOf(v) !== -1;
     });
   }
@@ -546,7 +554,8 @@
       group.querySelectorAll('.chip').forEach(function (c) {
         c.setAttribute('aria-pressed', String(c.getAttribute('data-value') === state[key]));
       });
-      group.closest('.q').classList.toggle('done', !!state[key]);
+      var q = group.closest('.q');
+      q.classList.toggle('done', !!q.querySelector('[aria-pressed="true"]'));
       render();
     });
   });
