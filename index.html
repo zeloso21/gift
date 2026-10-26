@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>선물 고르기</title>
+<meta name="description" content="누구에게, 얼마쯤, 어떤 날인지 고르면 선물 3가지를 골라 드려요.">
+<meta name="color-scheme" content="light dark">
+<style>
+  :root {
+    --bg: #fbf7f2;
+    --surface: #ffffff;
+    --text: #2b2420;
+    --muted: #7a6d64;
+    --line: #ece3d9;
+    --accent: #d9734e;
+    --accent-ink: #ffffff;
+    --accent-soft: #fbe9df;
+    --note-bg: #f4eee6;
+    --shadow: 0 1px 2px rgba(60, 40, 20, .06), 0 4px 14px rgba(60, 40, 20, .06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1916;
+      --surface: #262220;
+      --text: #f1e9e1;
+      --muted: #ab9f95;
+      --line: #3a3430;
+      --accent: #e98a64;
+      --accent-ink: #1c1916;
+      --accent-soft: #3d2a21;
+      --note-bg: #2b2623;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    word-break: keep-all;
+  }
+  main { max-width: 560px; margin: 0 auto; padding: 0 16px 48px; }
+
+  .disclosure {
+    margin: 0 -16px;
+    padding: 8px 16px;
+    background: var(--note-bg);
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.5;
+    border-bottom: 1px solid var(--line);
+  }
+  header { padding: 24px 0 8px; }
+  h1 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
+  .sub { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
+
+  .q { margin: 20px 0 0; padding: 0; border: 0; }
+  .q legend { padding: 0; margin-bottom: 8px; font-weight: 700; font-size: 15px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    appearance: none;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 15px;
+    padding: 8px 14px;
+    min-height: 40px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .chip:hover { border-color: var(--accent); }
+  .chip[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  .chip:focus-visible, .btn:focus-visible, summary:focus-visible {
+    outline: 3px solid var(--accent); outline-offset: 2px;
+  }
+
+  #results { margin-top: 28px; }
+  .hint { color: var(--muted); font-size: 15px; margin: 0; }
+  .relaxed {
+    margin: 0 0 12px;
+    padding: 10px 12px;
+    background: var(--accent-soft);
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  .relaxed strong { font-weight: 700; }
+
+  .list { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+  .card {
+    display: flex;
+    gap: 14px;
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+  /* 파트너스 배너: 원본 비율(240×480) 그대로, 자르거나 덮지 않음 */
+  .banner {
+    flex: 0 0 auto;
+    align-self: flex-start;
+    display: block;
+    box-sizing: content-box;
+    width: 110px;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #fff;
+  }
+  .info { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+  .info h3 { margin: 2px 0 6px; font-size: 17px; line-height: 1.35; }
+  .reason { margin: 0 0 8px; font-size: 14.5px; }
+  .price { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+  .btn {
+    margin-top: auto;
+    display: inline-block;
+    align-self: flex-start;
+    padding: 9px 16px;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .btn:hover { filter: brightness(1.05); }
+
+  .all { margin-top: 36px; border-top: 1px solid var(--line); padding-top: 16px; }
+  .all summary {
+    cursor: pointer;
+    font-weight: 700;
+    padding: 8px 0;
+    list-style-position: inside;
+  }
+  .all .list { margin-top: 12px; }
+
+  footer { margin-top: 32px; color: var(--muted); font-size: 12.5px; }
+  footer p { margin: 4px 0; }
+</style>
+</head>
+<body>
+<main>
+  <p class="disclosure">이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+
+  <header>
+    <h1>선물 고르기</h1>
+    <p class="sub">누구에게, 얼마쯤, 어떤 날인지 고르면 선물을 골라 드려요.</p>
+  </header>
+
+  <form id="questions" onsubmit="return false">
+    <fieldset class="q">
+      <legend>누구에게 주나요?</legend>
+      <div class="chips" data-key="who">
+        <button type="button" class="chip" data-value="parents" aria-pressed="false">부모님</button>
+        <button type="button" class="chip" data-value="coworker" aria-pressed="false">직장 동료</button>
+        <button type="button" class="chip" data-value="kids" aria-pressed="false">아이</button>
+        <button type="button" class="chip" data-value="lover" aria-pressed="false">연인</button>
+        <button type="button" class="chip" data-value="housewarming" aria-pressed="false">집들이</button>
+      </div>
+    </fieldset>
+    <fieldset class="q">
+      <legend>예산은 얼마쯤?</legend>
+      <div class="chips" data-key="budget">
+        <button type="button" class="chip" data-value="b1" aria-pressed="false">2만 원 이하</button>
+        <button type="button" class="chip" data-value="b2" aria-pressed="false">2~5만 원</button>
+        <button type="button" class="chip" data-value="b3" aria-pressed="false">5~10만 원</button>
+        <button type="button" class="chip" data-value="b4" aria-pressed="false">10만 원 이상</button>
+      </div>
+    </fieldset>
+    <fieldset class="q">
+      <legend>어떤 날인가요?</legend>
+      <div class="chips" data-key="occasion">
+        <button type="button" class="chip" data-value="holiday" aria-pressed="false">명절</button>
+        <button type="button" class="chip" data-value="birthday" aria-pressed="false">생일</button>
+        <button type="button" class="chip" data-value="thanks" aria-pressed="false">감사</button>
+        <button type="button" class="chip" data-value="housewarming" aria-pressed="false">집들이</button>
+      </div>
+    </fieldset>
+  </form>
+
+  <section id="results" aria-live="polite">
+    <p class="hint">위에서 하나라도 고르면 바로 여기에 선물이 나와요.</p>
+  </section>
+
+  <details class="all" id="all">
+    <summary>전체 선물 보기</summary>
+    <ul class="list" id="all-list"></ul>
+  </details>
+
+  <footer>
+    <p>가격은 수집일 기준 대략적인 금액이에요. 구매 전에 쿠팡에서 꼭 확인해 주세요.</p>
+    <p>이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var BUDGETS = {
+    b1: { label: '2만 원 이하', test: function (p) { return p <= 20000; } },
+    b2: { label: '2~5만 원', test: function (p) { return p > 20000 && p <= 50000; } },
+    b3: { label: '5~10만 원', test: function (p) { return p > 50000 && p <= 100000; } },
+    b4: { label: '10만 원 이상', test: function (p) { return p > 100000; } }
+  };
+  var NAMES = { who: '누구에게', budget: '예산', occasion: '상황' };
+  // 맞는 게 없을 때 먼저 푸는 조건 순서
+  var RELAX_ORDER = ['occasion', 'budget', 'who'];
+  var MAX = 3;
+
+  var products = [];
+  var state = { who: null, budget: null, occasion: null };
+  var results = document.getElementById('results');
+
+  function el(tag, attrs, text) {
+    var e = document.createElement(tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function priceText(p) {
+    if (p < 10000) return '약 1만 원 미만';
+    return '약 ' + Math.floor(p / 10000) + '만 원대';
+  }
+
+  function dateText(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || '');
+    return m ? Number(m[2]) + '월 ' + Number(m[3]) + '일 기준' : '수집일 기준';
+  }
+
+  function card(p) {
+    var li = el('li', { 'class': 'card' });
+    var img = el('img', {
+      'class': 'banner', src: p.image, alt: p.short + ' 상품 이미지',
+      width: '240', height: '480', loading: 'lazy', decoding: 'async'
+    });
+    li.appendChild(img);
+
+    var info = el('div', { 'class': 'info' });
+    info.appendChild(el('h3', {}, p.short));
+    info.appendChild(el('p', { 'class': 'reason' }, p.reason));
+    info.appendChild(el('p', { 'class': 'price' }, priceText(p.price) + ' · ' + dateText(p.collected) + ', 구매 전 확인'));
+    info.appendChild(el('a', {
+      'class': 'btn', href: p.link, target: '_blank', rel: 'sponsored noopener'
+    }, '쿠팡에서 보기'));
+    li.appendChild(info);
+    return li;
+  }
+
+  function matches(p, keys) {
+    return keys.every(function (k) {
+      var v = state[k];
+      if (k === 'budget') return BUDGETS[v].test(p.price);
+      return (p[k] || []).indexOf(v) !== -1;
+    });
+  }
+
+  // 고른 조건의 부분집합을 많이 남기는 순서로 (푸는 조건은 RELAX_ORDER 우선)
+  function relaxations(keys) {
+    var out = [];
+    var drop = RELAX_ORDER.filter(function (k) { return keys.indexOf(k) !== -1; });
+    for (var n = 1; n <= drop.length; n++) {
+      (function pick(start, chosen) {
+        if (chosen.length === n) { out.push(chosen.slice()); return; }
+        for (var i = start; i < drop.length; i++) pick(i + 1, chosen.concat(drop[i]));
+      })(0, []);
+    }
+    return out;
+  }
+
+  function render() {
+    var keys = Object.keys(state).filter(function (k) { return state[k]; });
+    results.innerHTML = '';
+    if (!keys.length) {
+      results.appendChild(el('p', { 'class': 'hint' }, '위에서 하나라도 고르면 바로 여기에 선물이 나와요.'));
+      return;
+    }
+
+    var found = products.filter(function (p) { return matches(p, keys); });
+    var dropped = [];
+    if (!found.length) {
+      var tries = relaxations(keys);
+      for (var i = 0; i < tries.length && !found.length; i++) {
+        var keep = keys.filter(function (k) { return tries[i].indexOf(k) === -1; });
+        found = products.filter(function (p) { return matches(p, keep); });
+        if (found.length) dropped = tries[i];
+      }
+    }
+
+    if (dropped.length) {
+      var note = el('p', { 'class': 'relaxed' });
+      note.appendChild(el('strong', {}, '조건을 넓혀 찾았어요. '));
+      note.appendChild(document.createTextNode(
+        "딱 맞는 선물이 없어서 '" + dropped.map(function (k) { return NAMES[k]; }).join("', '") + "' 조건은 빼고 골랐어요."
+      ));
+      results.appendChild(note);
+    }
+
+    if (!found.length) {
+      results.appendChild(el('p', { 'class': 'hint' }, '아직 맞는 선물이 없어요. 아래 전체 선물을 둘러봐 주세요.'));
+      return;
+    }
+
+    var ul = el('ul', { 'class': 'list' });
+    found.slice(0, MAX).forEach(function (p) { ul.appendChild(card(p)); });
+    results.appendChild(ul);
+  }
+
+  document.querySelectorAll('.chips').forEach(function (group) {
+    var key = group.getAttribute('data-key');
+    group.addEventListener('click', function (e) {
+      var chip = e.target.closest('.chip');
+      if (!chip) return;
+      var value = chip.getAttribute('data-value');
+      state[key] = state[key] === value ? null : value;
+      group.querySelectorAll('.chip').forEach(function (c) {
+        c.setAttribute('aria-pressed', String(c.getAttribute('data-value') === state[key]));
+      });
+      render();
+    });
+  });
+
+  fetch('products.json', { cache: 'no-cache' })
+    .then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      products = Array.isArray(data) ? data : [];
+      var all = document.getElementById('all-list');
+      products.forEach(function (p) { all.appendChild(card(p)); });
+      render();
+    })
+    .catch(function () {
+      results.innerHTML = '';
+      results.appendChild(el('p', { 'class': 'hint' }, '선물 목록을 불러오지 못했어요. 잠시 후 새로고침해 주세요.'));
+    });
+})();
+</script>
+</body>
+</html>
