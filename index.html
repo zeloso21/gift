@@ -119,15 +119,17 @@
   }
 
   /* 질문 */
-  .questions { position: relative; margin-top: -16px; display: grid; gap: 10px; }
-  .q {
-    margin: 0;
-    padding: 14px 16px 16px;
+  .questions {
+    position: relative;
+    margin-top: -16px;
+    padding: 4px 16px;
     border: 1px solid var(--line);
-    border-radius: 20px;
+    border-radius: 22px;
     background: var(--surface);
     box-shadow: var(--shadow);
   }
+  .q { margin: 0; padding: 14px 0 16px; border: 0; min-width: 0; }
+  .q + .q { border-top: 1px dashed var(--line); }
   .q legend {
     float: left;
     width: 100%;
@@ -153,20 +155,23 @@
     transition: background .2s, color .2s;
   }
   .q.done .step { background: var(--accent); color: var(--accent-ink); }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .chips[data-key="age"] { grid-template-columns: repeat(3, 1fr); }
   .chip {
     appearance: none;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
+    min-width: 0;
     border: 1.5px solid var(--line);
     background: var(--bg);
     color: var(--text);
     font: inherit;
     font-size: 15px;
-    padding: 8px 14px;
-    min-height: 42px;
-    border-radius: 999px;
+    padding: 8px 10px;
+    min-height: 44px;
+    border-radius: 14px;
     cursor: pointer;
     transition: background .15s, border-color .15s, color .15s, transform .1s;
   }
@@ -183,7 +188,7 @@
   .chip .count { font-size: 12px; font-weight: 600; opacity: .7; }
   /* 지금 조건으로 맞는 상품이 없는 칩: 누를 수는 있지만 흐리게 */
   .chip.none:not([aria-pressed="true"]) { opacity: .5; border-style: dashed; }
-  .chip:focus-visible, .btn:focus-visible, .more:focus-visible, .share:focus-visible, summary:focus-visible {
+  .chip:focus-visible, .sort:focus-visible, .btn:focus-visible, .more:focus-visible, .share:focus-visible, summary:focus-visible {
     outline: 3px solid var(--gold); outline-offset: 2px;
   }
 
@@ -204,6 +209,42 @@
   .empty .ico { font-size: 26px; }
   .results-head { margin: 0 0 12px; font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
   .results-head small { margin-left: 6px; color: var(--muted); font-size: 14px; font-weight: 500; }
+  /* 정렬 버튼 줄 */
+  .sortbar {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 2px;
+    margin: 0 0 14px;
+    padding: 3px;
+    border-radius: 14px;
+    background: var(--line);
+  }
+  .sort {
+    appearance: none;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 2px;
+    min-height: 38px;
+    border-radius: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s, color .15s, box-shadow .15s;
+  }
+  .sort:hover { color: var(--text); }
+  .sort[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+  .group-head {
+    margin: 6px 2px -4px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .group-head:first-child { margin-top: 0; }
   .relaxed {
     display: flex;
     gap: 8px;
@@ -245,24 +286,20 @@
     box-shadow: var(--shadow-sm);
   }
   .info { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+  .eyebrow { display: flex; align-items: center; gap: 6px; margin: 0 0 6px; font-size: 12.5px; font-weight: 700; color: var(--muted); }
   .rank {
-    align-self: flex-start;
-    margin-bottom: 6px;
     padding: 2px 9px;
     border-radius: 999px;
-    background: var(--accent-soft);
-    color: var(--accent-deep);
+    background: var(--accent);
+    color: var(--accent-ink);
     font-size: 12px;
     font-weight: 800;
   }
   .info h3 { margin: 0 0 6px; font-size: 17px; line-height: 1.35; letter-spacing: -0.01em; }
   .reason { margin: 0 0 10px; font-size: 14.5px; color: var(--text); }
-  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 8px; padding: 0; list-style: none; }
-  .tags li { padding: 1px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
-  .tag-gender { background: var(--sky); color: var(--sky-ink); }
-  .tag-age { background: var(--mint); color: var(--mint-ink); }
-  .price { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
-  .price b { color: var(--text); font-size: 15px; font-weight: 800; }
+  .fit { margin: 0 0 10px; font-size: 13px; color: var(--mint-ink); font-weight: 600; }
+  .price { margin: 0 0 12px; color: var(--muted); font-size: 12.5px; line-height: 1.4; }
+  .price b { display: block; color: var(--text); font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
   .btn {
     margin-top: auto;
     display: inline-flex;
@@ -376,6 +413,7 @@
   }
   .all[open] summary::after { transform: rotate(-135deg) translateY(-3px); }
   .all summary small { margin-left: 6px; color: var(--muted); font-weight: 500; }
+  .all .sortbar { margin: 0 12px 12px; }
   .all .list { padding: 0 12px 12px; }
   .all .card { box-shadow: none; background: var(--bg); }
 
@@ -441,6 +479,7 @@
 
   <details class="all" id="all">
     <summary><span>전체 선물 보기<small id="all-count"></small></span></summary>
+    <div class="sortbar" id="all-sort" role="group" aria-label="전체 선물 정렬"></div>
     <ul class="list" id="all-list"></ul>
   </details>
 
@@ -461,6 +500,11 @@
     b4: { label: '10만 원 이상', test: function (p) { return p > 100000; } }
   };
   var NAMES = { gender: '성별', age: '연령대', budget: '예산' };
+  // products.json의 category 값 → 화면 이름 (이 순서대로 묶어 보여 줌, 없거나 모르는 값은 '기타')
+  var CATEGORIES = { food: '먹거리', beauty: '뷰티', living: '생활·리빙', digital: '디지털', fashion: '패션·잡화', hobby: '취미·놀이' };
+  var CAT_ORDER = Object.keys(CATEGORIES).concat('etc');
+  var SORTS = { rec: '추천순', low: '낮은 가격순', high: '높은 가격순', cat: '카테고리별' };
+  var ALL_SORTS = ['cat', 'low', 'high'];
   var GENDER = { male: '남성', female: '여성' };
   var AGE = { kids: '아이', '10s': '10대', '20s': '20대', '30s': '30대', '40s': '40대', '50plus': '50대 이상' };
   // 맞는 게 없을 때 먼저 푸는 조건 순서
@@ -472,6 +516,8 @@
   var loaded = false;
   var state = { gender: null, age: null, budget: null };
   var shownMax = MAX;
+  var sortMode = 'rec';
+  var allSort = 'cat';
   var results = document.getElementById('results');
   var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -492,6 +538,9 @@
     return m ? Number(m[2]) + '월 ' + Number(m[3]) + '일 기준' : '수집일 기준';
   }
 
+  function catOf(p) { return CATEGORIES[p.category] ? p.category : 'etc'; }
+  function catName(p) { return CATEGORIES[p.category] || '기타'; }
+
   function card(p, rank) {
     var li = el('li', { 'class': 'card' });
     var img = el('img', {
@@ -501,19 +550,22 @@
     li.appendChild(img);
 
     var info = el('div', { 'class': 'info' });
-    if (rank) info.appendChild(el('span', { 'class': 'rank' }, '추천 ' + rank));
+    var eyebrow = el('p', { 'class': 'eyebrow' });
+    if (rank) eyebrow.appendChild(el('span', { 'class': 'rank' }, '추천 ' + rank));
+    eyebrow.appendChild(el('span', {}, catName(p)));
+    info.appendChild(eyebrow);
     info.appendChild(el('h3', {}, p.short));
     info.appendChild(el('p', { 'class': 'reason' }, p.reason));
 
-    var tags = el('ul', { 'class': 'tags', 'aria-label': '어울리는 성별과 연령대' });
+    var fit = [];
     // 성별은 한쪽에만 맞는 상품일 때만 태그로 보여 준다
-    if (p.gender && p.gender.length === 1 && GENDER[p.gender[0]]) tags.appendChild(el('li', { 'class': 'tag-gender' }, GENDER[p.gender[0]]));
-    (p.age || []).forEach(function (a) { if (AGE[a]) tags.appendChild(el('li', { 'class': 'tag-age' }, AGE[a])); });
-    info.appendChild(tags);
+    if (p.gender && p.gender.length === 1 && GENDER[p.gender[0]]) fit.push(GENDER[p.gender[0]]);
+    (p.age || []).forEach(function (a) { if (AGE[a]) fit.push(AGE[a]); });
+    if (fit.length) info.appendChild(el('p', { 'class': 'fit' }, '✓ ' + fit.join(' · ')));
 
     var price = el('p', { 'class': 'price' });
     price.appendChild(el('b', {}, priceText(p.price)));
-    price.appendChild(document.createTextNode(' · ' + dateText(p.collected) + ', 구매 전 확인'));
+    price.appendChild(document.createTextNode(dateText(p.collected) + ', 구매 전 확인'));
     info.appendChild(price);
 
     info.appendChild(el('a', {
@@ -559,8 +611,61 @@
   function rank(list, dropped) {
     return list
       .map(function (p, i) { return { p: p, i: i, s: score(p, dropped) }; })
-      .sort(function (a, b) { return b.s - a.s || a.i - b.i; })
+      // 점수가 같으면 싼 상품부터
+      .sort(function (a, b) { return b.s - a.s || a.p.price - b.p.price || a.i - b.i; })
       .map(function (x) { return x.p; });
+  }
+
+  // 정렬: list는 이미 기본 순서(추천순)로 놓여 있고, 같은 값끼리는 그 순서를 지킨다
+  function arrange(list, mode) {
+    if (mode === 'rec') return list;
+    return list
+      .map(function (p, i) { return { p: p, i: i }; })
+      .sort(function (a, b) {
+        var d = mode === 'low' ? a.p.price - b.p.price
+          : mode === 'high' ? b.p.price - a.p.price
+          : CAT_ORDER.indexOf(catOf(a.p)) - CAT_ORDER.indexOf(catOf(b.p));
+        return d || a.i - b.i;
+      })
+      .map(function (x) { return x.p; });
+  }
+
+  // 카드 목록 채우기 (카테고리별이면 카테고리 이름으로 묶음, 추천순일 때만 '추천 N' 표시)
+  function fillList(ul, list, mode, numbered) {
+    var last = null;
+    list.forEach(function (p, i) {
+      if (mode === 'cat' && catOf(p) !== last) {
+        last = catOf(p);
+        ul.appendChild(el('li', { 'class': 'group-head' }, catName(p)));
+      }
+      ul.appendChild(card(p, numbered && mode === 'rec' ? i + 1 : 0));
+    });
+  }
+
+  // 정렬 버튼을 bar 안에 채운다. 누르면 다시 그린 뒤 같은 버튼에 포커스를 돌려준다
+  function fillSortBar(bar, modes, current, onPick) {
+    bar.innerHTML = '';
+    modes.forEach(function (m) {
+      var b = el('button', { type: 'button', 'class': 'sort', 'data-value': m, 'aria-pressed': String(m === current) }, SORTS[m]);
+      b.addEventListener('click', function () {
+        onPick(m);
+        // 결과 쪽 정렬 줄은 다시 그려지며 새로 만들어진다
+        var again = bar.isConnected ? bar : results.querySelector('.sortbar');
+        var btn = again && again.querySelector('.sort[data-value="' + m + '"]');
+        if (btn) btn.focus({ preventScroll: true });
+      });
+      bar.appendChild(b);
+    });
+  }
+
+  function renderAll() {
+    var ul = document.getElementById('all-list');
+    fillSortBar(document.getElementById('all-sort'), ALL_SORTS, allSort, function (m) {
+      allSort = m;
+      renderAll();
+    });
+    ul.innerHTML = '';
+    fillList(ul, arrange(products, allSort), allSort, false);
   }
 
   // 고른 조건의 부분집합을 많이 남기는 순서로 (푸는 조건은 RELAX_ORDER 우선)
@@ -611,12 +716,21 @@
       return;
     }
 
-    found = rank(found, dropped);
+    found = arrange(rank(found, dropped), sortMode);
     var shown = found.slice(0, shownMax);
     var head = el('h2', { 'class': 'results-head' }, '이런 선물 어때요?');
     head.appendChild(el('small', {}, found.length > shown.length
       ? found.length + '가지 중 ' + shown.length + '가지' : shown.length + '가지'));
     results.appendChild(head);
+    if (found.length > 1) {
+      var bar = el('div', { 'class': 'sortbar', role: 'group', 'aria-label': '추천 선물 정렬' });
+      fillSortBar(bar, ['rec', 'low', 'high', 'cat'], sortMode, function (m) {
+        sortMode = m;
+        saveToUrl();
+        render();
+      });
+      results.appendChild(bar);
+    }
 
     if (dropped.length) {
       var note = el('div', { 'class': 'relaxed' });
@@ -631,7 +745,7 @@
     }
 
     var ul = el('ul', { 'class': 'list' });
-    shown.forEach(function (p, i) { ul.appendChild(card(p, i + 1)); });
+    fillList(ul, shown, sortMode, true);
     results.appendChild(ul);
 
     var actions = el('div', { 'class': 'actions' });
@@ -734,14 +848,20 @@
   function saveToUrl() {
     if (!window.history || !history.replaceState) return;
     var q = Object.keys(state).filter(function (k) { return state[k]; })
-      .map(function (k) { return k + '=' + encodeURIComponent(state[k]); }).join('&');
+      .map(function (k) { return k + '=' + encodeURIComponent(state[k]); });
+    if (sortMode !== 'rec') q.push('sort=' + sortMode);
+    q = q.join('&');
     history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
   }
 
   function loadFromUrl() {
-    var m, re = /[?&](gender|age|budget)=([^&#]*)/g;
+    var m, re = /[?&](gender|age|budget|sort)=([^&#]*)/g;
     while ((m = re.exec(location.search))) {
       var v = decodeURIComponent(m[2]);
+      if (m[1] === 'sort') {
+        if (SORTS.hasOwnProperty(v)) sortMode = v;
+        continue;
+      }
       if (VALID[m[1]].hasOwnProperty(v)) state[m[1]] = v;
     }
   }
@@ -807,8 +927,7 @@
     .then(function (data) {
       products = Array.isArray(data) ? data : [];
       loaded = true;
-      var all = document.getElementById('all-list');
-      products.forEach(function (p) { all.appendChild(card(p)); });
+      renderAll();
       document.getElementById('all-count').textContent = products.length + '개';
       updateCounts();
       render();

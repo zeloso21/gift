@@ -4,7 +4,7 @@
 
 ## 데이터
 - `products.json` — 상품 목록. **로컬 PC에서 크롬으로 쿠팡 파트너스 화면에서 모아 넣는다**(파트너스 API는 최종 승인 전이라 못 씀). 이 저장소 안에서 상품을 지어내거나 링크·이미지 주소를 만들지 말 것.
-- 필드: `id`, `name`(상품 전체 이름), `short`(카드용 짧은 이름), `price`(수집 시점 할인가, 원), `link`(파트너스 링크 link.coupang.com/a/...), `image`(파트너스 '이미지+텍스트' 배너, coupangcdn, 240×480 세로), `who`(대상 배열: parents/coworker/kids/lover/housewarming — 지금 화면에선 안 씀), `gender`(성별 배열: male/female, 선택 — 비우거나 없으면 모두에게 맞는 걸로 봄), `age`(연령대 배열: kids/10s/20s/30s/40s/50plus, 선택 — 비우거나 없으면 모든 연령에 맞는 걸로 봄), `occasion`(상황 배열: holiday/birthday/thanks/housewarming — 지금 화면에선 안 씀), `reason`(고른 이유 한 줄), `collected`(수집일).
+- 필드: `id`, `name`(상품 전체 이름), `short`(카드용 짧은 이름), `category`(카테고리 하나: food 먹거리/beauty 뷰티/living 생활·리빙/digital 디지털/fashion 패션·잡화/hobby 취미·놀이 — 없거나 모르는 값은 '기타'), `price`(수집 시점 할인가, 원), `link`(파트너스 링크 link.coupang.com/a/...), `image`(파트너스 '이미지+텍스트' 배너, coupangcdn, 240×480 세로), `who`(대상 배열: parents/coworker/kids/lover/housewarming — 지금 화면에선 안 씀), `gender`(성별 배열: male/female, 선택 — 비우거나 없으면 모두에게 맞는 걸로 봄), `age`(연령대 배열: kids/10s/20s/30s/40s/50plus, 선택 — 비우거나 없으면 모든 연령에 맞는 걸로 봄), `occasion`(상황 배열: holiday/birthday/thanks/housewarming — 지금 화면에선 안 씀), `reason`(고른 이유 한 줄), `collected`(수집일).
 
 ## 지켜야 할 쿠팡 파트너스 규칙 (가이드 PDF 기준)
 - 페이지 **맨 위(첫 화면)에 경제적 이해관계 문구를 항상 보이게**: "이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다."
@@ -20,4 +20,7 @@
 - 연령대: 아이 / 10대 / 20대 / 30대 / 40대 / 50대 이상.
 - 첫 화면 경제적 이해관계 문구 바로 아래에 쿠팡 파트너스 검색 위젯(iframe `https://coupa.ng/cqq84P`, 높이 75).
 - 예산 구간: 2만 원 이하 / 2~5만 원 / 5~10만 원 / 10만 원 이상.
+- 결과·전체 보기 정렬: 추천순(점수 같으면 싼 것 먼저) / 낮은 가격순 / 높은 가격순 / 카테고리별. 결과 정렬은 주소 `?sort=`에 남김.
+- `collect.md` — 빈 칸별로 찾을 상품 종류·쿠팡 검색어 목록과 보내는 방법(배너 HTML 코드 + 가격).
+- `check.html` — 수집 체크리스트(검색 노출 안 함). products.json을 읽어 성별×연령대×예산, 카테고리×예산별 상품 수와 먼저 채울 곳을 보여 줌.
 - 외부 라이브러리 없이 바닐라 JS. 이미지 `loading="lazy"`.
