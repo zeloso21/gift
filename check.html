@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>수집 체크리스트</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root {
+    --bg: #fdf8f3;
+    --surface: #ffffff;
+    --text: #2e231d;
+    --muted: #7c6c61;
+    --line: #f0e3d6;
+    --zero: #fbe1dc;
+    --zero-ink: #b23a22;
+    --low: #fff1d6;
+    --ok: #dff1e6;
+    --ok-ink: #2f6b4a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1b1613;
+      --surface: #261f1b;
+      --text: #f4ebe3;
+      --muted: #b2a398;
+      --line: #3a2f29;
+      --zero: #4a2219;
+      --zero-ink: #ffb4a3;
+      --low: #3d3220;
+      --ok: #22362b;
+      --ok-ink: #9fd8b5;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    word-break: keep-all;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; }
+  h1 { margin: 0 0 4px; font-size: 24px; }
+  h2 { margin: 28px 0 8px; font-size: 18px; }
+  .sub { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
+  .summary { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+  .summary li { padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .summary b { display: block; font-size: 22px; }
+  .wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: center; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th { color: var(--muted); font-weight: 700; }
+  tbody tr:last-child td, tbody tr:last-child th { border-bottom: 0; }
+  td.zero { background: var(--zero); color: var(--zero-ink); font-weight: 800; }
+  td.low { background: var(--low); font-weight: 700; }
+  td.ok { background: var(--ok); color: var(--ok-ink); }
+  .legend { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+  ol { margin: 0; padding-left: 20px; }
+  ol li { margin: 4px 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>수집 체크리스트</h1>
+  <p class="sub">products.json을 읽어 어느 조합에 상품이 모자란지 보여 줘요. 상품을 넣고 새로고침하면 바로 바뀌어요.</p>
+  <ul class="summary" id="summary"></ul>
+
+  <h2>먼저 채울 곳</h2>
+  <ol id="todo"></ol>
+
+  <h2>성별 × 연령대 × 예산</h2>
+  <div class="wrap"><table id="matrix"></table></div>
+  <p class="legend">빨강 0개 · 노랑 1~2개 · 초록 3개 이상 (결과 화면은 3개까지 보여 줘요)</p>
+
+  <h2>카테고리 × 예산</h2>
+  <div class="wrap"><table id="cats"></table></div>
+</main>
+<script>
+(function () {
+  'use strict';
+  // index.html과 같은 기준
+  var BUDGETS = [
+    { key: 'b1', label: '2만 원 이하', test: function (p) { return p <= 20000; } },
+    { key: 'b2', label: '2~5만 원', test: function (p) { return p > 20000 && p <= 50000; } },
+    { key: 'b3', label: '5~10만 원', test: function (p) { return p > 50000 && p <= 100000; } },
+    { key: 'b4', label: '10만 원 이상', test: function (p) { return p > 100000; } }
+  ];
+  var GENDER = { male: '남성', female: '여성' };
+  var AGE = { kids: '아이', '10s': '10대', '20s': '20대', '30s': '30대', '40s': '40대', '50plus': '50대 이상' };
+  var CATEGORIES = { food: '먹거리', beauty: '뷰티', living: '생활·리빙', digital: '디지털', fashion: '패션·잡화', hobby: '취미·놀이', etc: '기타' };
+  var ENOUGH = 3;
+
+  function el(tag, attrs, text) {
+    var e = document.createElement(tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  // 비었으면 모두에게 맞는 걸로 본다
+  function fits(arr, v) { return !(arr && arr.length) || arr.indexOf(v) !== -1; }
+  function cell(n) {
+    return el('td', { 'class': n === 0 ? 'zero' : n < ENOUGH ? 'low' : 'ok' }, String(n));
+  }
+  function head(table, first) {
+    var tr = el('tr');
+    tr.appendChild(el('th', {}, first));
+    BUDGETS.forEach(function (b) { tr.appendChild(el('th', {}, b.label)); });
+    var thead = el('thead');
+    thead.appendChild(tr);
+    table.appendChild(thead);
+    var tbody = el('tbody');
+    table.appendChild(tbody);
+    return tbody;
+  }
+
+  fetch('products.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (ps) {
+    var empty = 0, total = 0, gaps = [];
+
+    var tbody = head(document.getElementById('matrix'), '대상');
+    Object.keys(GENDER).forEach(function (g) {
+      Object.keys(AGE).forEach(function (a) {
+        var tr = el('tr');
+        tr.appendChild(el('th', {}, AGE[a] + ' ' + GENDER[g]));
+        BUDGETS.forEach(function (b) {
+          var n = ps.filter(function (p) { return fits(p.gender, g) && fits(p.age, a) && b.test(p.price); }).length;
+          total++;
+          if (n === 0) empty++;
+          if (n < ENOUGH) gaps.push({ n: n, text: AGE[a] + ' ' + GENDER[g] + ' · ' + b.label });
+          tr.appendChild(cell(n));
+        });
+        tbody.appendChild(tr);
+      });
+    });
+
+    var cbody = head(document.getElementById('cats'), '카테고리');
+    Object.keys(CATEGORIES).forEach(function (c) {
+      var mine = ps.filter(function (p) { return (CATEGORIES[p.category] ? p.category : 'etc') === c; });
+      if (c === 'etc' && !mine.length) return;
+      var tr = el('tr');
+      tr.appendChild(el('th', {}, CATEGORIES[c] + ' (' + mine.length + ')'));
+      BUDGETS.forEach(function (b) { tr.appendChild(cell(mine.filter(function (p) { return b.test(p.price); }).length)); });
+      cbody.appendChild(tr);
+    });
+
+    var summary = document.getElementById('summary');
+    [['전체 상품', ps.length + '개'], ['빈 조합', empty + ' / ' + total], ['3개 미만 조합', gaps.length + ' / ' + total]]
+      .forEach(function (x) {
+        var li = el('li', {}, x[0]);
+        li.appendChild(el('b', {}, x[1]));
+        summary.appendChild(li);
+      });
+
+    // 0개인 곳부터, 같은 개수끼리는 표 순서대로
+    var todo = document.getElementById('todo');
+    gaps.sort(function (a, b) { return a.n - b.n; }).slice(0, 12).forEach(function (g) {
+      todo.appendChild(el('li', {}, g.text + ' — 지금 ' + g.n + '개'));
+    });
+    if (!gaps.length) todo.appendChild(el('li', {}, '모든 조합에 3개 이상 있어요 🎉'));
+  });
+})();
+</script>
+</body>
+</html>
